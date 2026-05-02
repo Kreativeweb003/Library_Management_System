@@ -1,0 +1,30 @@
+{% extends 'accounts/admin_base.html' %}
+
+{% block title %}Delete Book{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <h2 class="auth-title">Delete Book</h2>
+
+    <p style="margin-bottom: 20px;">
+        Are you sure you want to delete
+        <strong>"{{ book.title }}"</strong>?
+    </p>
+
+    <form method="POST" class="admin-form">
+        {% csrf_token %}
+
+        <button type="submit" class="btn-delete">
+            Yes, Delete
+        </button>
+
+        <a href="{% url 'book_list' %}" class="btn-edit">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

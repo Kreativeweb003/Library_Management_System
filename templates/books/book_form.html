@@ -1,0 +1,83 @@
+{% extends 'accounts/admin_base.html' %}
+
+{% block title %}Book Form{% endblock %}
+
+{% block content %}
+
+<div class="bkf-wrapper">
+
+    <div class="bkf-card">
+
+        <div class="bkf-header">
+            <h2>Book Form</h2>
+        </div>
+
+        <form method="POST" class="bkf-form">
+            {% csrf_token %}
+
+            <!-- TITLE -->
+            <div class="bkf-field">
+                <label>Title</label>
+                <input type="text" name="title"
+                       value="{{ form.title.value|default:'' }}" required>
+            </div>
+
+            <!-- AUTHOR -->
+            <div class="bkf-field">
+                <label>Author</label>
+                <input type="text" name="author"
+                       value="{{ form.author.value|default:'' }}" required>
+            </div>
+
+            <!-- ISBN -->
+            <div class="bkf-field">
+                <label>ISBN</label>
+                <input type="text" name="isbn"
+                       value="{{ form.isbn.value|default:'' }}" required>
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="bkf-field">
+                <label>Category</label>
+                {{ form.category }}
+            </div>
+
+            <!-- QUANTITY -->
+            <div class="bkf-field">
+                <label>Quantity</label>
+                <input type="number" name="quantity"
+                       value="{{ form.quantity.value|default:'' }}" required>
+            </div>
+
+            <!-- AVAILABLE -->
+            <div class="bkf-field">
+                <label>Available Quantity</label>
+                <input type="number" name="available_quantity"
+                       value="{{ form.available_quantity.value|default:'' }}">
+            </div>
+
+            <!-- YEAR -->
+            <div class="bkf-field">
+                <label>Publication Year</label>
+                <input type="number" name="publication_year"
+                       value="{{ form.publication_year.value|default:'' }}">
+            </div>
+
+            <!-- ERRORS -->
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="bkf-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit" class="bkf-btn">
+                Save Book
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

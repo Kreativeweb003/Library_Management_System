@@ -1,0 +1,54 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Library</h2>
+
+        <ul class="nav-links">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="{% url 'borrowed_books' %}">My Books</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <h1>Dashboard</h1>
+            <p>Welcome, {{ request.user.username }}</p>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="search-box">
+            <form method="GET">
+                <input type="text" name="q" placeholder="Search books...">
+                <button type="submit" class="btn-primary">Search</button>
+            </form>
+        </div>
+
+        <!-- BOOK LIST -->
+        <div class="book-grid">
+            {% for book in books %}
+                <div class="book-card">
+                    <h3>{{ book.title }}</h3>
+                    <p>{{ book.author }}</p>
+                    <p>Available: {{ book.available_quantity }}</p>
+                </div>
+            {% empty %}
+                <p>No books found</p>
+            {% endfor %}
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

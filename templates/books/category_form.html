@@ -1,0 +1,48 @@
+{% extends 'accounts/admin_base.html' %}
+
+{% block title %}Category Form{% endblock %}
+
+{% block content %}
+
+<div class="cat-form-wrapper">
+
+    <div class="cat-form-card">
+
+        <h2 class="cat-form-title">Category Form</h2>
+
+        <form method="POST" class="cat-form">
+            {% csrf_token %}
+
+            <!-- CATEGORY NAME -->
+            <div class="cat-field">
+                <label>Category Name</label>
+                <input type="text"
+                       name="category_name"
+                       value="{{ form.category_name.value|default:'' }}"
+                       required>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="cat-field">
+                <label>Description</label>
+                <textarea name="description" rows="4">{{ form.description.value|default:'' }}</textarea>
+            </div>
+
+            <!-- ERRORS -->
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="cat-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit" class="cat-btn">
+                Save Category
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

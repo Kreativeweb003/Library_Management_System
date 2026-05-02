@@ -1,0 +1,30 @@
+{% extends 'accounts/admin_base.html' %}
+
+{% block title %}Delete Category{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <h2 class="auth-title">Delete Category</h2>
+
+    <p style="margin-bottom: 20px;">
+        Are you sure you want to delete
+        <strong>"{{ category.category_name }}"</strong>?
+    </p>
+
+    <form method="POST" class="admin-form">
+        {% csrf_token %}
+
+        <button type="submit" class="btn-delete">
+            Yes, Delete
+        </button>
+
+        <a href="{% url 'category_list' %}" class="btn-edit">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

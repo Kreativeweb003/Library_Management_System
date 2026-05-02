@@ -1,0 +1,46 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Borrowed Books{% endblock %}
+
+{% block content %}
+
+<div class="borrow-wrapper">
+
+    <div class="borrow-header">
+        <h2>My Borrowed Books</h2>
+
+        <div class="borrow-actions">
+            <a href="{% url 'user_dashboard' %}" class="borrow-btn secondary">Dashboard</a>
+            <a href="{% url 'logout' %}" class="borrow-btn danger">Logout</a>
+        </div>
+    </div>
+
+    {% for message in messages %}
+        <div class="borrow-message">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="borrow-grid">
+
+        {% for t in transactions %}
+            <div class="borrow-card">
+
+                <h3>{{ t.book.title }}</h3>
+                <p><strong>Author:</strong> {{ t.book.author }}</p>
+                <p><strong>Borrowed:</strong> {{ t.borrowed_at }}</p>
+
+                <a href="{% url 'return_book' t.id %}" class="borrow-btn primary">
+                    Return Book
+                </a>
+
+            </div>
+        {% empty %}
+            <p class="borrow-empty">No borrowed books</p>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
