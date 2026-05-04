@@ -4,26 +4,35 @@
 
 {% block content %}
 
-<div class="form-container">
+<div class="adbd-wrapper">
 
-    <h2 class="auth-title">Delete Book</h2>
+    <div class="adbd-card">
 
-    <p style="margin-bottom: 20px;">
-        Are you sure you want to delete
-        <strong>"{{ book.title }}"</strong>?
-    </p>
+        <h2 class="adbd-title">Delete Book</h2>
 
-    <form method="POST" class="admin-form">
-        {% csrf_token %}
+        <p class="adbd-text">
+            Are you sure you want to delete
+            <strong>"{{ book.title }}"</strong>?
+        </p>
 
-        <button type="submit" class="btn-delete">
-            Yes, Delete
-        </button>
+        <form method="POST" class="adbd-form">
+            {% csrf_token %}
 
-        <a href="{% url 'book_list' %}" class="btn-edit">
-            Cancel
-        </a>
-    </form>
+            <div class="adbd-actions">
+
+                <button type="submit" class="adbd-btn-delete">
+                    Yes, Delete
+                </button>
+
+                <a href="{% url 'book_list' %}" class="adbd-btn-cancel">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 

@@ -9,13 +9,13 @@
 </head>
 <body>
 
-<div class="dashboard">
+<div class="ad-wrapper">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <h2 class="logo">Admin Panel</h2>
+    <aside class="ad-sidebar">
+        <h2 class="ad-logo">Admin Panel</h2>
 
-        <ul class="nav-links">
+        <ul class="ad-nav">
             <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
             <li><a href="{% url 'book_list' %}">Books</a></li>
             <li><a href="{% url 'category_list' %}">Categories</a></li>
@@ -24,7 +24,7 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <main class="ad-main">
         {% block content %}
         {% endblock %}
     </main>

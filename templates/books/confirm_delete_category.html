@@ -4,26 +4,35 @@
 
 {% block content %}
 
-<div class="form-container">
+<div class="catd-wrapper">
 
-    <h2 class="auth-title">Delete Category</h2>
+    <div class="catd-card">
 
-    <p style="margin-bottom: 20px;">
-        Are you sure you want to delete
-        <strong>"{{ category.category_name }}"</strong>?
-    </p>
+        <h2 class="catd-title">Delete Category</h2>
 
-    <form method="POST" class="admin-form">
-        {% csrf_token %}
+        <p class="catd-text">
+            Are you sure you want to delete
+            <strong>"{{ category.category_name }}"</strong>?
+        </p>
 
-        <button type="submit" class="btn-delete">
-            Yes, Delete
-        </button>
+        <form method="POST" class="catd-form">
+            {% csrf_token %}
 
-        <a href="{% url 'category_list' %}" class="btn-edit">
-            Cancel
-        </a>
-    </form>
+            <div class="catd-actions">
+
+                <button type="submit" class="catd-btn-delete">
+                    Yes, Delete
+                </button>
+
+                <a href="{% url 'category_list' %}" class="catd-btn-cancel">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 

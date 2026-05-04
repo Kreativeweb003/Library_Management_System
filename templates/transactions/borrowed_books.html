@@ -1,4 +1,4 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/user_base.html' %}
 
 {% block title %}Borrowed Books{% endblock %}
 
@@ -6,31 +6,47 @@
 
 <div class="borrow-wrapper">
 
+    <!-- HEADER -->
     <div class="borrow-header">
-        <h2>My Borrowed Books</h2>
+
+        <h2 class="borrow-title">My Borrowed Books</h2>
 
         <div class="borrow-actions">
-            <a href="{% url 'user_dashboard' %}" class="borrow-btn secondary">Dashboard</a>
-            <a href="{% url 'logout' %}" class="borrow-btn danger">Logout</a>
+            <a href="{% url 'user_dashboard' %}" class="borrow-btn borrow-btn-secondary">
+                Dashboard
+            </a>
+
+            <a href="{% url 'logout' %}" class="borrow-btn borrow-btn-danger">
+                Logout
+            </a>
         </div>
+
     </div>
 
+    <!-- MESSAGES -->
     {% for message in messages %}
         <div class="borrow-message">
             {{ message }}
         </div>
     {% endfor %}
 
+    <!-- GRID -->
     <div class="borrow-grid">
 
         {% for t in transactions %}
             <div class="borrow-card">
 
-                <h3>{{ t.book.title }}</h3>
-                <p><strong>Author:</strong> {{ t.book.author }}</p>
-                <p><strong>Borrowed:</strong> {{ t.borrowed_at }}</p>
+                <h3 class="borrow-book-title">{{ t.book.title }}</h3>
 
-                <a href="{% url 'return_book' t.id %}" class="borrow-btn primary">
+                <p class="borrow-text">
+                    <strong>Author:</strong> {{ t.book.author }}
+                </p>
+
+                <p class="borrow-text">
+                    <strong>Borrowed:</strong> {{ t.borrowed_at }}
+                </p>
+
+                <a href="{% url 'return_book' t.id %}" class="borrow-btn borrow-btn-primary">
                     Return Book
                 </a>
 

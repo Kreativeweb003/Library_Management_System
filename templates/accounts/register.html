@@ -3,44 +3,55 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<div class="auth-container">
 
-    <div class="auth-card">
-        <h2 class="auth-title">Create Account</h2>
+<div class="rg-wrapper">
+
+    <div class="rg-card">
+        <h2 class="rg-title">Create Account</h2>
 
         {% if form.errors %}
-            <div class="auth-message">
+            <div class="rg-message">
                 Please correct the errors below
             </div>
         {% endif %}
 
-        <form method="POST" class="auth-form">
+        <form method="POST" class="rg-form">
             {% csrf_token %}
 
-            <div class="form-group">
+            <div class="rg-field">
                 <input type="text" name="username" placeholder="Username" required>
             </div>
 
-            <div class="form-group">
+            <div class="rg-field">
                 <input type="email" name="email" placeholder="Email" required>
             </div>
 
-            <div class="form-group">
+            <div class="rg-field">
                 <input type="password" name="password1" placeholder="Password" required>
             </div>
 
-            <div class="form-group">
+            <div class="rg-field">
                 <input type="password" name="password2" placeholder="Confirm Password" required>
             </div>
 
-            <button type="submit" class="btn-primary">Register</button>
+            <!-- FIELD ERRORS -->
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="rg-message">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit" class="rg-btn">
+                Register
+            </button>
         </form>
 
-        <p class="auth-footer">
+        <p class="rg-footer">
             Already have an account?
             <a href="{% url 'login' %}">Login</a>
         </p>
     </div>
 
 </div>
+
 {% endblock %}
