@@ -6,23 +6,56 @@ from django.http import HttpResponseForbidden
 from .forms import RegisterForm
 from books.models import Book
 from transactions.models import Transaction
+from django.contrib.auth.models import User
+
+
+
 
 
 #==========================================
 #  User Registeration Functionalities
 #==========================================
 
+
+
 def register_view(request):
     if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Account created successfully")
-            return redirect('login')
-    else:
-        form = RegisterForm()
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
 
-    return render(request, 'accounts/register.html', {'form': form})
+        # password match check
+        if password1 != password2:
+            messages.error(request, "Passwords do not match")
+            return redirect("register")
+
+        # username check
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("register")
+
+        # email check
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists")
+            return redirect("register")
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password1,
+            first_name=first_name,
+            last_name=last_name
+        )
+
+        user.save()
+
+        messages.success(request, "Account created successfully. You can now log in.")
+        return redirect("login")
+
+    return render(request, "accounts/register.html")
 
 
 #=================================================
