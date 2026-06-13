@@ -8,6 +8,10 @@ from books.models import Book
 from transactions.models import Transaction
 
 
+#==========================================
+#  User Registeration Functionalities
+#==========================================
+
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -19,6 +23,11 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, 'accounts/register.html', {'form': form})
+
+
+#=================================================
+#  Login to Admin / User Dashboard Funtionalities
+#=================================================
 
 
 def login_view(request):
@@ -41,9 +50,9 @@ def login_view(request):
     return render(request, 'accounts/login.html')
 
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+#==========================================
+#  Admin Dashboard Functionalities
+#==========================================
 
 
 @login_required
@@ -54,6 +63,11 @@ def admin_dashboard(request):
     books = Book.objects.all()
 
     return render(request, 'accounts/admin_dashboard.html')
+
+
+#==========================================
+#  User Dashboard Functionalities
+#==========================================
 
 
 @login_required
@@ -76,3 +90,13 @@ def user_dashboard(request):
     }
 
     return render(request, 'accounts/user_dashboard.html', context)
+
+#==========================================
+#  Logout Funtionalities
+#==========================================
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
