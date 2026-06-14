@@ -1,17 +1,128 @@
 {% extends 'accounts/admin_base.html' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Borrow Management{% endblock %}
 
 {% block content %}
 
-<div class="ad-dash">
+{% if messages %}
+    <div class="adbmx-messages">
+        {% for message in messages %}
+            <div class="adbmx-alert adbmx-alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="adbmx-page">
 
     <!-- HEADER -->
-    <div class="ad-dash-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome, {{ request.user.username }}</p>
+    <div class="adbmx-header">
+        <h1 class="adbmx-title">Borrowed Books Management</h1>
+        <p class="adbmx-subtitle">Track and manage all active borrow records</p>
+    </div>
+
+    <!-- SEARCH -->
+    <form method="GET" class="adbmx-search">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search user or book..."
+            value="{{ query }}"
+            class="adbmx-input"
+        >
+        <button type="submit" class="adbmx-btn adbmx-btn-primary">
+            Search
+        </button>
+    </form>
+
+    <!-- TABLE WRAP -->
+    <div class="adbmx-table-wrapper">
+
+        <table class="adbmx-table">
+
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Book</th>
+                    <th>Borrowed Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for t in transactions %}
+                <tr class="adbmx-row">
+
+                    <td class="adbmx-cell">
+                        {{ t.user.username }}
+                    </td>
+
+                    <td class="adbmx-cell">
+                        {{ t.book.title }}
+                    </td>
+
+                    <td class="adbmx-cell">
+                        {{ t.borrowed_at }}
+                    </td>
+
+                    <td class="adbmx-cell">
+
+                        {% if t.returned_at %}
+                            <span class="adbmx-badge adbmx-badge-returned">
+                                Returned
+                            </span>
+                        {% else %}
+                            <span class="adbmx-badge adbmx-badge-active">
+                                Borrowed
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                    <td class="adbmx-cell">
+
+                        {% if not t.returned_at %}
+                            <form method="POST" action="{% url 'admin_return_book' t.id %}">
+                                {% csrf_token %}
+                                <button class="adbmx-btn adbmx-btn-success">
+                                    Mark Returned
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="adbmx-muted">—</span>
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="adbmx-empty">
+                        No borrowed books found
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
     </div>
 
 </div>
+
+<script>
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.adbmx-alert');
+        alerts.forEach(alert => {
+            alert.style.transition = "0.5s ease";
+            alert.style.opacity = "0";
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 3000);
+</script>
 
 {% endblock %}

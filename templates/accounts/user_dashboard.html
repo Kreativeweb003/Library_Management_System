@@ -6,6 +6,13 @@
 
 <div class="db-dash">
 
+    <!-- MESSAGES -->
+    {% for message in messages %}
+        <div class="borrow-message">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <!-- TOP BAR -->
     <div class="db-dash-header">
         <h1>Dashboard</h1>
@@ -25,20 +32,45 @@
 
         {% for book in books %}
             <div class="db-card">
-
+            
                 <h3 class="db-title">{{ book.title }}</h3>
                 <p class="db-text">{{ book.author }}</p>
                 <p class="db-stock">
                     Available: {{ book.available_quantity }}
                 </p>
-
+            
+                {% if book.available_quantity > 0 %}
+                    <form method="POST" action="{% url 'borrow_book' book.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="db-btn">
+                            Borrow
+                        </button>
+                    </form>
+                {% else %}
+                    <button class="db-btn" disabled>Not Available</button>
+                {% endif %}
+            
             </div>
-        {% empty %}
-            <p class="db-empty">No books found</p>
         {% endfor %}
-
     </div>
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const messages = document.querySelectorAll(".borrow-message");
+
+    messages.forEach(msg => {
+        setTimeout(() => {
+            msg.style.transition = "opacity 0.5s ease";
+            msg.style.opacity = "0";
+
+            setTimeout(() => {
+                msg.remove();
+            }, 500); // wait for fade-out
+        }, 3000); // 3 seconds before disappearing
+    });
+});
+</script>
 
 {% endblock %}

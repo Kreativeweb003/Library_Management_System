@@ -9,8 +9,6 @@ class Transaction(models.Model):
 
     borrowed_at = models.DateTimeField(auto_now_add=True)
     returned_at = models.DateTimeField(null=True, blank=True)
-
-    is_returned = models.BooleanField(default=False)
-
+  
     def __str__(self):
         return f"{self.user.username} - {self.book.title}"

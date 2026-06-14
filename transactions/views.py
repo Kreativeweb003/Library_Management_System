@@ -2,12 +2,12 @@ from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
-
+from django.contrib.admin.views.decorators import staff_member_required
 from books.models import Book
 from .models import Transaction
 
 
-# ✅ BORROW BOOK
+
 @login_required
 def borrow_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
@@ -20,7 +20,7 @@ def borrow_book(request, book_id):
     # 2. Check user limit (max 5 active books)
     active_borrows = Transaction.objects.filter(
         user=request.user,
-        is_returned=False
+        returned_at__isnull=True
     ).count()
 
     if active_borrows >= 5:
@@ -31,7 +31,7 @@ def borrow_book(request, book_id):
     already_borrowed = Transaction.objects.filter(
         user=request.user,
         book=book,
-        is_returned=False
+        returned_at__isnull=True
     ).exists()
 
     if already_borrowed:
@@ -44,7 +44,7 @@ def borrow_book(request, book_id):
         book=book
     )
 
-    # 5. Reduce available quantity
+    # 5. Reduce stock
     book.available_quantity -= 1
     book.save()
 
@@ -52,40 +52,46 @@ def borrow_book(request, book_id):
     return redirect('user_dashboard')
 
 
-# ✅ RETURN BOOK
+
+
 @login_required
-def return_book(request, transaction_id):
-    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+def admin_return_book(request, transaction_id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Not allowed")
 
-    if transaction.is_returned:
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+
+    # ❌ already returned check (NEW LOGIC)
+    if transaction.returned_at is not None:
         messages.error(request, "Book already returned")
-        return redirect('user_dashboard')
+        return redirect('admin_dashboard')
 
-    # Mark as returned
-    transaction.is_returned = True
+    # mark returned
     transaction.returned_at = timezone.now()
     transaction.save()
 
-    # Increase available quantity
+    # restore stock
     book = transaction.book
     book.available_quantity += 1
     book.save()
 
-    messages.success(request, "Book returned successfully")
-    return redirect('user_dashboard')
+    messages.success(request, "Book marked as returned successfully")
+    return redirect('admin_dashboard')
+
 
 
 # Borrow page funtionality
+
 @login_required
 def borrowed_books(request):
-    transactions = Transaction.objects.filter(
-        user=request.user,
-        is_returned=False
-    )
+    transactions = Transaction.objects.select_related('book').filter(
+        user=request.user
+    ).order_by('-borrowed_at')
 
     return render(request, 'transactions/borrowed_books.html', {
         'transactions': transactions
     })
+
 
 
 

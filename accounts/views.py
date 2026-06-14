@@ -7,7 +7,8 @@ from .forms import RegisterForm
 from books.models import Book
 from transactions.models import Transaction
 from django.contrib.auth.models import User
-
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
 
 
 
@@ -92,16 +93,31 @@ def login_view(request):
 def admin_dashboard(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden("You are not allowed to access this page")
-        
-    books = Book.objects.all()
 
-    return render(request, 'accounts/admin_dashboard.html')
+    query = request.GET.get('q', '')
+
+    # ✅ ONLY ACTIVE BORROWS
+    transactions = Transaction.objects.select_related('book', 'user').filter(
+        returned_at__isnull=True
+    )
+
+    if query:
+        transactions = transactions.filter(
+            Q(book__title__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    print("TRANSACTION COUNT:", transactions.count())
+
+    return render(request, 'accounts/admin_dashboard.html', {
+        'transactions': transactions,
+        'query': query,
+    })
 
 
 #==========================================
 #  User Dashboard Functionalities
 #==========================================
-
 
 @login_required
 def user_dashboard(request):
@@ -112,10 +128,11 @@ def user_dashboard(request):
     if query:
         books = books.filter(title__icontains=query)
 
+    # ✅ ACTIVE BORROWS ONLY
     borrowed_books = Transaction.objects.filter(
         user=request.user,
-        is_returned=False
-    )
+        returned_at__isnull=True
+    ).select_related('book')
 
     context = {
         'books': books,

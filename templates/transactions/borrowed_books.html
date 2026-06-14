@@ -11,16 +11,6 @@
 
         <h2 class="borrow-title">My Borrowed Books</h2>
 
-        <div class="borrow-actions">
-            <a href="{% url 'user_dashboard' %}" class="borrow-btn borrow-btn-secondary">
-                Dashboard
-            </a>
-
-            <a href="{% url 'logout' %}" class="borrow-btn borrow-btn-danger">
-                Logout
-            </a>
-        </div>
-
     </div>
 
     <!-- MESSAGES -->
@@ -45,10 +35,6 @@
                 <p class="borrow-text">
                     <strong>Borrowed:</strong> {{ t.borrowed_at }}
                 </p>
-
-                <a href="{% url 'return_book' t.id %}" class="borrow-btn borrow-btn-primary">
-                    Return Book
-                </a>
 
             </div>
         {% empty %}
