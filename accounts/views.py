@@ -107,7 +107,6 @@ def admin_dashboard(request):
             Q(user__username__icontains=query)
         )
 
-    print("TRANSACTION COUNT:", transactions.count())
 
     return render(request, 'accounts/admin_dashboard.html', {
         'transactions': transactions,
