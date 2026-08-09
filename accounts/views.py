@@ -17,9 +17,9 @@ from django.db.models import Q
 #  User Registeration Functionalities
 #==========================================
 
-
-
 def register_view(request):
+  
+    # accept the request of user details from the register form
     if request.method == "POST":
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -63,21 +63,28 @@ def register_view(request):
 #  Login to Admin / User Dashboard Funtionalities
 #=================================================
 
-
 def login_view(request):
+  
+    # accept details from the login form for validation
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-
+        
+        # Condition for validating user
         if user is not None:
             login(request, user)
 
+            # if user is a superuser(admin) redirect to admin dashboard
             if user.is_superuser:
                 return redirect('admin_dashboard')
+
+            # if user is not a superuser redirect to user dashboard
             else:
                 return redirect('user_dashboard')
+              
+        # error display fo failed user login
         else:
             messages.error(request, "Invalid username or password")
 
@@ -88,19 +95,22 @@ def login_view(request):
 #  Admin Dashboard Functionalities
 #==========================================
 
-
 @login_required
 def admin_dashboard(request):
+  
+    # validate if the user is a superuser
     if not request.user.is_superuser:
         return HttpResponseForbidden("You are not allowed to access this page")
 
+    # store query request into a query variable
     query = request.GET.get('q', '')
 
-    # ✅ ONLY ACTIVE BORROWS
+    # display only active books
     transactions = Transaction.objects.select_related('book', 'user').filter(
         returned_at__isnull=True
     )
 
+    # search filters with books and username
     if query:
         transactions = transactions.filter(
             Q(book__title__icontains=query) |
@@ -120,8 +130,11 @@ def admin_dashboard(request):
 
 @login_required
 def user_dashboard(request):
+  
+    # store query request into a query variable
     query = request.GET.get('q')
 
+    # filter available books (filter our the ones with 0 available quantity)
     books = Book.objects.filter(available_quantity__gt=0)
 
     if query:
@@ -144,8 +157,8 @@ def user_dashboard(request):
 #  Logout Funtionalities
 #==========================================
 
-
 def logout_view(request):
+    # logout Functionalities
     logout(request)
     return redirect('login')
 
